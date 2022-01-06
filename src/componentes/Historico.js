@@ -5,7 +5,7 @@ import axios from 'axios';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-export default function Habitos() {
+export default function Historico() {
   const percentage = 66;
 
   return (
@@ -17,13 +17,11 @@ export default function Habitos() {
       </Header>
 
       <TituloHabitos>
-        <span>Meus hábitos</span>
-        <button>+</button>
+        <span>Histórico</span>
       </TituloHabitos>
 
       <SemHabitos>
-        <span>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!
-        </span>
+        <span>Em breve você poderá ver o histórico dos seus hábitos aqui!</span>
       </SemHabitos>
 
       <Footer>
