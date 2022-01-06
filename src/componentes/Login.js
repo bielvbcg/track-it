@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -8,8 +8,22 @@ import logo from "../assets/trackit-logo.png"
 export default function Login() {
   const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
+  let navigate = useNavigate()
 
-  function logar() { }
+
+  function logar(event) {
+    event.preventDefault()
+
+    const cadastro = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
+      {
+        email: email,
+        password: senha,
+      })
+
+    cadastro.then((r) => navigate("/habitos"))
+
+    cadastro.catch(error => console.log(error.response))
+  }
 
   return (
     <Main>

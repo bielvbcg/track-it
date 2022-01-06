@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -10,8 +10,23 @@ export default function Login() {
   const [senha, setSenha] = useState("")
   const [nome, setNome] = useState("")
   const [foto, setFoto] = useState("")
+  let navigate = useNavigate()
 
-  function logar() { }
+  function logar(event) {
+    event.preventDefault()
+
+    const cadastro = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",
+      {
+        email: email,
+        name: nome,
+        image: foto,
+        password: senha,
+      })
+
+    cadastro.then((r) => navigate("/"))
+
+    cadastro.catch(error => alert(error.response.status))
+  }
 
   return (
     <Main>
