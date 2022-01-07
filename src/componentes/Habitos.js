@@ -28,6 +28,7 @@ export default function Habitos() {
 
       <Footer>
         <span>Hábitos</span>
+
         <div>
           <CircularProgressbar
             value={percentage}
@@ -42,6 +43,7 @@ export default function Habitos() {
             })}
           />
         </div>
+
         <span>Histórico</span>
       </Footer>
 
