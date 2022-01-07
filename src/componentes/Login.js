@@ -31,7 +31,7 @@ export default function Login() {
     })
 
     cadastro.catch(error => {
-      console.log(error.response)
+      alert(error.response.data.message)
       setBotaoClickado(false)
     })
   }

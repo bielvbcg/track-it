@@ -4,9 +4,12 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
 
 export default function Hoje() {
   const percentage = 66;
+  const dia = dayjs().locale("pt-br").format("dddd, D/M");
 
   return (
     <Main>
@@ -17,7 +20,7 @@ export default function Hoje() {
       </Header>
 
       <Titulo>
-        <div className="data">Segunda, 17/05</div>
+        <div className="data">{dia}</div>
         <div className="progresso">Nenhum hábito concluído ainda</div>
       </Titulo>
 
