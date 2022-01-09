@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from "react-router-dom"
 import styled from 'styled-components';
 import axios from 'axios';
@@ -6,11 +6,13 @@ import Loader from "react-loader-spinner";
 
 import logo from "../assets/trackit-logo.png"
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import AppContext from '../contexts/AppContext';
 
 export default function Login() {
   const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
   const [botaoClickado, setBotaoClickado] = useState(false)
+  const { setToken, setImagem } = useContext(AppContext)
   let navigate = useNavigate()
 
 
@@ -26,6 +28,8 @@ export default function Login() {
     setBotaoClickado(true)
 
     cadastro.then((r) => {
+      setToken(r.data.token)
+      setImagem(r.data.image)
       navigate("/habitos")
       setBotaoClickado(false)
     })
