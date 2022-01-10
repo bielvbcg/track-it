@@ -1,42 +1,53 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
+import AppContext from '../contexts/AppContext';
+import BotaoDias from './BotaoDias';
+import axios from 'axios';
 
-export default function CriarHabito({ funcao }) {
-  const [habito, setHabito] = useState("")
-  const [dias, setDias] = useState([false, false, false, false, false, false, false])
+export default function CriarHabito({ escondeTela, habito, setHabito, dias, setDias, pegarHabitos }) {
+  const { token } = useContext(AppContext)
 
   function novoHabito(event) {
     event.preventDefault();
-  }
 
-  function selecionarDia(dia) {
-    dias[dia] = !dias[dia]
-    setDias([...dias])
-    console.log(dias)
-  }
+    const body = { name: habito, days: dias }
 
-  function handleColor(dia) {
-    if (dias[dia]) { return "#D5D5D5" }
-    else return "#FFFFFF"
+    const config = {
+      headers: { "Authorization": `Bearer ${token}` }
+    }
+
+    const promessaHabito = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config)
+
+    promessaHabito.then(promessa => {
+      console.log(promessa.data)
+      escondeTela(false)
+      setHabito("")
+      setDias([])
+      pegarHabitos()
+    })
+    promessaHabito.catch(error => {
+      alert(error.response.data.message)
+    })
   }
 
   return (
+
     <Criar onSubmit={novoHabito}>
       <input type="text" placeholder="nome do hábito" value={habito} onChange={e => setHabito(e.target.value)} />
 
       <Dias>
-        <button onClick={() => selecionarDia(0)} cor={handleColor(0)}>D</button>
-        <button onClick={() => selecionarDia(1)} cor={handleColor(1)}>S</button>
-        <button onClick={() => selecionarDia(2)} cor={handleColor(2)}>T</button>
-        <button onClick={() => selecionarDia(3)} cor={handleColor(3)}>Q</button>
-        <button onClick={() => selecionarDia(4)} cor={handleColor(4)}>Q</button>
-        <button onClick={() => selecionarDia(5)} cor={handleColor(5)}>S</button>
-        <button onClick={() => selecionarDia(6)} cor={handleColor(6)}>S</button>
+        <BotaoDias dia="0" funcaoDias={setDias} arrayDias={dias}>D</BotaoDias>
+        <BotaoDias dia="1" funcaoDias={setDias} arrayDias={dias}>S</BotaoDias>
+        <BotaoDias dia="2" funcaoDias={setDias} arrayDias={dias}>T</BotaoDias>
+        <BotaoDias dia="3" funcaoDias={setDias} arrayDias={dias}>Q</BotaoDias>
+        <BotaoDias dia="4" funcaoDias={setDias} arrayDias={dias}>Q</BotaoDias>
+        <BotaoDias dia="5" funcaoDias={setDias} arrayDias={dias}>S</BotaoDias>
+        <BotaoDias dia="6" funcaoDias={setDias} arrayDias={dias}>S</BotaoDias>
       </Dias>
 
       <Botoes>
-        <button className="cancelar" onClick={() => funcao(false)}>Cancelar</button>
-        <button className="salvar" type='submit'>Salvar</button>
+        <button className="cancelar" onClick={() => escondeTela(false)}>Cancelar</button>
+        <button className="salvar" type="submit">Salvar</button>
       </Botoes>
 
     </Criar>
@@ -70,20 +81,6 @@ const Criar = styled.form`
 
 const Dias = styled.div`
   padding-left: 17px;
-
-  button {
-    width: 30px;
-    height: 30px;
-
-    background: ${props => props.cor};
-    border: 1px solid #D5D5D5;
-    box-sizing: border-box;
-    border-radius: 5px;
-
-    margin-right: 4px;
-
-    color: #DBDBDB;
-  }
 `
 
 const Botoes = styled.div`
