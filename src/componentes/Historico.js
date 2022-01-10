@@ -1,8 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
-import { Link, useParams } from "react-router-dom"
+import { useContext } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import Footer from './Footer';
 import Header from "./Header"

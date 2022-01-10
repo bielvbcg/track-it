@@ -11,8 +11,9 @@ import AppContext from "../contexts/AppContext";
 export default function App() {
   const [token, setToken] = useState(null)
   const [imagem, setImagem] = useState(null)
+  const [porcentagem, setPorcentagem] = useState(0)
 
-  const contexto = { token, setToken, imagem, setImagem }
+  const contexto = { token, setToken, imagem, setImagem, porcentagem, setPorcentagem }
 
   return (
 

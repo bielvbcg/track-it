@@ -1,8 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
-import { Link, useParams } from "react-router-dom"
 import styled from 'styled-components';
 import axios from 'axios';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import Footer from './Footer';
 import Header from "./Header"
@@ -31,11 +29,13 @@ export default function Habitos() {
   }
 
   function excluirHabito(id) {
-    const deletar = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, {
+    const config = {
       headers: {
         "Authorization": `Bearer ${token}
       ` }
-    })
+    }
+
+    const deletar = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, config)
 
     deletar.then(() => pegarHabitos())
   }
@@ -60,30 +60,29 @@ export default function Habitos() {
           pegarHabitos={pegarHabitos}
         />}
 
-      {listaHabitos && listaHabitos.map(habito => {
-        return (
-          <Habito>
+      {listaHabitos && listaHabitos.map(habito => (
+        <Habito>
 
-            <div>
-              <span>{habito.name}</span>
+          <div>
+            <span>{habito.name}</span>
 
-              <div className="caixaDias">
-                <DiaDaSemana selecionado={habito.days.includes(0)}>D</DiaDaSemana>
-                <DiaDaSemana selecionado={habito.days.includes(1)}>S</DiaDaSemana>
-                <DiaDaSemana selecionado={habito.days.includes(2)}>T</DiaDaSemana>
-                <DiaDaSemana selecionado={habito.days.includes(3)}>Q</DiaDaSemana>
-                <DiaDaSemana selecionado={habito.days.includes(4)}>Q</DiaDaSemana>
-                <DiaDaSemana selecionado={habito.days.includes(5)}>S</DiaDaSemana>
-                <DiaDaSemana selecionado={habito.days.includes(6)}>S</DiaDaSemana>
-              </div>
-
+            <div className="caixaDias">
+              <DiaDaSemana selecionado={habito.days.includes(0)}>D</DiaDaSemana>
+              <DiaDaSemana selecionado={habito.days.includes(1)}>S</DiaDaSemana>
+              <DiaDaSemana selecionado={habito.days.includes(2)}>T</DiaDaSemana>
+              <DiaDaSemana selecionado={habito.days.includes(3)}>Q</DiaDaSemana>
+              <DiaDaSemana selecionado={habito.days.includes(4)}>Q</DiaDaSemana>
+              <DiaDaSemana selecionado={habito.days.includes(5)}>S</DiaDaSemana>
+              <DiaDaSemana selecionado={habito.days.includes(6)}>S</DiaDaSemana>
             </div>
 
-            <ion-icon name="trash-outline" onClick={() => { if (window.confirm("Deseja realmente excluir o habito?")) excluirHabito(habito.id) }}></ion-icon>
+          </div>
 
-          </Habito>
-        )
-      })}
+          <ion-icon name="trash-outline" onClick={() => { if (window.confirm("Deseja realmente excluir o habito?")) excluirHabito(habito.id) }}></ion-icon>
+
+        </Habito>
+      )
+      )}
 
       {!listaHabitos.length &&
         <SemHabitos>

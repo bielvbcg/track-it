@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import { Link, useParams } from "react-router-dom"
 import styled from 'styled-components';
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -9,8 +8,48 @@ import Footer from './Footer';
 import AppContext from '../contexts/AppContext';
 
 export default function Hoje() {
+  const [listaHabitos, setListaHabitos] = useState([]);
+  const [carregando, setCarregando] = useState(false)
+  const { imagem, token, porcentagem, setPorcentagem } = useContext(AppContext)
   const dia = dayjs().locale("pt-br").format("dddd, D/M");
-  const { imagem } = useContext(AppContext)
+
+  useEffect(() => { carregarPagina() }, [])
+
+  function carregarPagina() {
+    const config = {
+      headers: {
+        "Authorization": `Bearer ${token}
+      ` }
+    }
+
+    const promessa = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config)
+
+    promessa.then(response => {
+      setListaHabitos(response.data)
+
+      let numeroHabitos = 0
+      response.data.map(habito => { if (habito.done) { numeroHabitos++ } })
+
+      setPorcentagem((numeroHabitos / listaHabitos.length) * 100)
+    })
+  }
+
+  function marcarHabito(id, done) {
+    setCarregando(true)
+
+    const config = {
+      headers: {
+        "Authorization": `Bearer ${token}
+      ` }
+    }
+
+    const rota = done ? "uncheck" : "check"
+
+    axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/${rota}`, {}, config)
+
+    carregarPagina()
+    setCarregando(false)
+  }
 
   return (
     <Main>
@@ -19,52 +58,31 @@ export default function Hoje() {
 
       <Titulo>
         <div className="data">{dia}</div>
-        <div className="progresso">Nenhum hábito concluído ainda</div>
+        {porcentagem === 0 ?
+          <div className="progresso">Nenhum hábito concluído ainda</div> :
+          <div className="concluidos">{Math.round(porcentagem)}% dos hábitos concluídos</div>
+        }
       </Titulo>
 
       <Habitos>
 
-        <div className="habito">
+        {listaHabitos.map(habito => (
+          <Habito
+            feito={habito.done}
+            maiorSequencia={habito.currentSequence === habito.highestSequence && habito.highestSequence !== 0}>
 
-          <div>
-            <span className="titulo">Ler 1 capítulo de livro</span>
-            <span className="sequencia">Sequência atual: 3 dias</span>
-            <span className="recorde">Seu recorde: 5 dias</span>
-          </div>
+            <div>
+              <span className="titulo">{habito.name}</span>
+              <span className="sequencia">Sequência atual: <span>{habito.currentSequence} dias</span></span>
+              <span className="recorde">Seu recorde: <span>{habito.highestSequence} dias</span></span>
+            </div>
 
-          <button>
-            <ion-icon name="checkmark-outline"></ion-icon>
-          </button>
+            <button onClick={() => marcarHabito(habito.id, habito.done)} disabled={carregando}>
+              <ion-icon name="checkmark-outline"></ion-icon>
+            </button>
 
-        </div>
-
-        <div className="habito">
-
-          <div>
-            <span className="titulo">Ler 1 capítulo de livro</span>
-            <span className="sequencia">Sequência atual: 3 dias</span>
-            <span className="recorde">Seu recorde: 5 dias</span>
-          </div>
-
-          <button>
-            <ion-icon name="checkmark-outline"></ion-icon>
-          </button>
-
-        </div>
-
-        <div className="habito">
-
-          <div>
-            <span className="titulo">Ler 1 capítulo de livro</span>
-            <span className="sequencia">Sequência atual: 3 dias</span>
-            <span className="recorde">Seu recorde: 5 dias</span>
-          </div>
-
-          <button>
-            <ion-icon name="checkmark-outline"></ion-icon>
-          </button>
-
-        </div>
+          </Habito>
+        ))}
 
       </Habitos>
 
@@ -75,7 +93,7 @@ export default function Hoje() {
 }
 
 const Main = styled.div`
-
+  margin-bottom: 70px;
 `
 
 const Titulo = styled.div`
@@ -94,6 +112,13 @@ const Titulo = styled.div`
 
     color: #BABABA;
   }
+
+  .concluidos {
+    font-size: 17.976px;
+    line-height: 22px;
+
+    color: #8FC549;
+  }
 `
 
 const Habitos = styled.div`
@@ -102,8 +127,9 @@ const Habitos = styled.div`
 
   display: flex;
   flex-direction: column;
-  
-  .habito {
+`
+
+const Habito = styled.div`
     width: 340px;
     height: 94px;
 
@@ -115,39 +141,46 @@ const Habitos = styled.div`
     border-radius: 5px;
 
     padding: 13px 13px 12px 15px;
-  }
 
-  .habito div {
+  div {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
   }
 
-  .habito div .titulo {
+  div .titulo {
     font-size: 19.976px;
     line-height: 25px;
 
     color: #666666;
   }
 
-  .habito div .sequencia , .habito div .recorde {
+  div .sequencia ,  div .recorde {
     font-size: 12.976px;
     line-height: 16px;
 
     color: #666666;
   }
 
-  .habito button {
+  div .sequencia span {
+    ${props => props.feito && "color: #8FC549;"}
+  }
+
+  div .recorde span {
+    ${props => props.maiorSequencia && "color: #8FC549;"}
+  }
+
+  button {
     width: 69px;
     height: 69px;
 
-    background: #EBEBEB;
+    background: ${props => props.feito ? "#8FC549" : "#EBEBEB"};
     border: 1px solid #E7E7E7;
     border-radius: 5px;
   }
 
-  .habito button ion-icon {
+  button ion-icon {
     color: #ffffff;
 
     font-size: 45px;
