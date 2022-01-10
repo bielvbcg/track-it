@@ -18,7 +18,7 @@ export default function BotaoDias(props) {
   }
 
   return (
-    <Button type="button" onClick={() => handleSelecionado(props.dia)} clickado={selecionado}>{props.children}</Button>
+    <Button type="button" onClick={() => handleSelecionado(props.dia)} clickado={selecionado} disabled={props.carregando}>{props.children}</Button>
   )
 }
 

@@ -10,10 +10,14 @@ import AppContext from '../contexts/AppContext';
 export default function Hoje() {
   const [listaHabitos, setListaHabitos] = useState([]);
   const [carregando, setCarregando] = useState(false)
+  const [aux, setAux] = useState(null)
   const { imagem, token, porcentagem, setPorcentagem } = useContext(AppContext)
   const dia = dayjs().locale("pt-br").format("dddd, D/M");
 
-  useEffect(() => { carregarPagina() }, [])
+  useEffect(() => {
+    carregarPagina()
+    console.log(porcentagem)
+  }, [])
 
   function carregarPagina() {
     const config = {
@@ -31,6 +35,7 @@ export default function Hoje() {
       response.data.map(habito => { if (habito.done) { numeroHabitos++ } })
 
       setPorcentagem((numeroHabitos / listaHabitos.length) * 100)
+      setAux(true)
     })
   }
 
@@ -58,9 +63,9 @@ export default function Hoje() {
 
       <Titulo>
         <div className="data">{dia}</div>
-        {porcentagem === 0 ?
+        {porcentagem === 0 || porcentagem === Infinity || porcentagem === NaN ?
           <div className="progresso">Nenhum hábito concluído ainda</div> :
-          <div className="concluidos">{Math.round(porcentagem)}% dos hábitos concluídos</div>
+          <div className="concluidos">{aux && Math.round(porcentagem)}% dos hábitos concluídos</div>
         }
       </Titulo>
 
