@@ -1,6 +1,7 @@
 # Track It
 
 Um aplicativo para ajudar o usuário a rastrear seus hábitos diários, onde é possível criar uma conta e se logar para criar rotinas pessoais <br/>
+![TrackIt](https://github.com/bielvbcg/projeto_10_trackit/blob/main/src/assets/readme-print.png)
 
 ### Sobre
 
